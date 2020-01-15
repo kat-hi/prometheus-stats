@@ -1,25 +1,45 @@
-import requests
 import sys
+import requests
+import datetime
+import simplejson
 
 HOST = 'http://localhost'
 PORT = 9090
 
+time = (str(datetime.datetime.now().time()).split('.')[0]).replace(':','-')
+
+'''
+# use command-line arguments 
 RESSOURCE = sys.argv[1]
 PARAM = sys.argv[2]
 FILENAME = sys.argv[3]
 
-query = HOST + ':' + str(PORT) + RESSOURCE
+'''
 
-print(query)
+# use ressource items from queries.txt
+queries=[]
+with open('../ressources/queries_reduced.txt', 'r') as file:
+	f = file.read().split('\n')
 
-r = requests.get(query, allow_redirects=True, params ={'query': PARAM})
+for item in f:
+	queries.append(item)
 
-text = r.text
-print(text)
 
-file = open(FILENAME, 'w')
-file.write(text)
-file.close()
+# query = HOST + ':' + str(PORT) + RESSOURCE
+query = HOST + ':' + str(PORT) + '/api/v1/query'
+
+for q in queries:
+	r = requests.get(query, allow_redirects=True, params ={'query': q})
+	file = open('../data/'+q+time+'.json', 'w')
+	file.write(simplejson.dumps(simplejson.loads(r.text), indent=4))
+	file.close()
+
+#text = r.text
+#print(text)
+
+#file = open(FILENAME, 'w')
+#file.write(text)
+#file.close()
 
 '''
 server_adr = (HOST,PORT)
