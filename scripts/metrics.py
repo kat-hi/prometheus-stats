@@ -1,10 +1,6 @@
 import requests
-import socket
-import threading
-import json
 import sys
 
-#HOST = 'http://prometheus.monitor.svc.cluster.local'
 HOST = 'http://localhost'
 PORT = 9090
 
@@ -65,34 +61,5 @@ def close():
     #send_request()
     #receive()
     #close()
-                                                                                                                                                                66,1          Bot
 
-
-
-def connect():
-    try:
-        sock.connect(server_adr)
-        print('Connection established')
-    except socket.error:
-        print('Something went wrong')
-
-def send_request():
-    request = "GET /api/v1/alerts HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\n\r\n" % HOST
-    sock.send(request.encode())
-
-def receive():
-    content = b''
-    while True:
-        response = sock.recv(64000)
-        if not response:
-            break
-        content = content + response
-    return content
-
-
-if __name__ == '__main__':
-    connect()
-    receive()
-    send_request()
-    
 '''
