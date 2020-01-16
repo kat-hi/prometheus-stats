@@ -9,7 +9,7 @@ using the prometheus api for statistical analysis of its metrics
 $ kubectl port-forward podname 9100:9100
 ```
 ### scripts / execution
-scripts/metrics.py [arg1] [arg2] [arg3]
+scripts/metrics_cmd.py [arg1] [arg2] [arg3]
 
 - arg1 : ressource ( e.g. "/api/v1/query" or "/api/v1/query_range"
 - arg2 : parameter ( e.g. "node_cpu_seconds_total", use items from ressources/queries.txt )
