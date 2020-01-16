@@ -24,10 +24,17 @@ for item in f:
 	queries.append(item)
 
 
-query = HOST + ':' + str(PORT) + '/api/v1/query'
+query = HOST + ':' + str(PORT) + '/api/v1/query_range'
 
 for q in queries:
-	r = requests.get(query, allow_redirects=True, params ={'query': q})
-	file = open('../data/'+q+time+'.json', 'w')
-	file.write(simplejson.dumps(simplejson.loads(r.text), indent=4))
+	qu = q+'&start=2020-01-05T10:10:10-01:00&end=2020-01-13T11:11:11-01:00&step=120s'
+	print(query+'?query='+qu)
+	r = ""
+	try:
+		r = requests.get(query+'?query='+qu, allow_redirects=True)
+	except:
+		pass
+
+	file = open('../data/' + q + time + '.json', 'w')
+	file.write(simplejson.dumps(simplejson.loads(r.content), indent=4))
 	file.close()
