@@ -1,5 +1,7 @@
 import re
 
+# this script is for fetching all values into a list that can be choosen from localhost:9090/graph
+#
 regex = 'value = \"(\w)*\" '
 values = []
 file = open('options.txt', 'r')
@@ -8,7 +10,7 @@ for line in file:
 
 file.close()
 
-with open('queries.txt', 'w') as file:
+with open('../ressources/queries.txt', 'w') as file:
 	for value in values:
 		file.writelines(value+'\r\n')
 
