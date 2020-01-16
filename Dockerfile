@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 RUN apt-get update -y
 
-RUN apt install python3.7 -y 
+RUN apt install python3.6 -y 
 
 RUN apt install python-pip -y
 
