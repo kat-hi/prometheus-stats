@@ -1,8 +1,23 @@
 import simplejson
 import json
+import os
+import re
 
-with open('../data/node_cpu_core_throttles_total01-34-20.json') as file:
+regex = "(\D)*"
+colnames = []
+values = []
+
+for filename in os.listdir('../data/'):
+	colnames.append(re.search(regex, filename).group())
+	file = open('../data/'+filename, 'r')
 	data = json.load(file)
-	print(data['status'])
+	results = data['results'][0]['series'][0]['values']
+	file.close()
 
-	print(type(data['data']['result']))
+
+'''
+with open('../data/data.csv', 'w') as file:
+	for item in res:
+		file.writelines(str(item[8]))
+file.close()
+'''
