@@ -15,6 +15,7 @@ scripts/metrics_cmd.py [arg1] [arg2] [arg3]
 - arg2 : parameter ( e.g. "node_cpu_seconds_total", use items from ressources/queries.txt )
 - arg3 : filename ( e.g "node_cpu_seconds_total.json" )
 
+
 ### ressources 
 queries.txt | contains queries you may use to request data from /api/v1/
 
