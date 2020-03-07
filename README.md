@@ -1,23 +1,15 @@
 # prometheus-stats
 
 ## what is this project about?
-using the prometheus api for statistical analysis of its metrics
+using the influxdb api for statistical analysis of its prometheus metrics
 
-## How to fetch data from prometheus api 
+## How to fetch data from influxdb api 
 ### prerequisite
+- influxdb is deployed on your k8s cluster and gets data from prometheus
+- do port forward to your local machine:
+
 ```
-$ kubectl port-forward podname 9100:9100
+$ kubectl port-forward podname 8086:8086
 ```
-### scripts / execution
-scripts/metrics_cmd.py [arg1] [arg2] [arg3]
-
-- arg1 : ressource ( e.g. "/api/v1/query" or "/api/v1/query_range"
-- arg2 : parameter ( e.g. "node_cpu_seconds_total", use items from ressources/queries.txt )
-- arg3 : filename ( e.g "node_cpu_seconds_total.json" )
 
 
-### ressources 
-queries.txt | contains queries you may use to request data from /api/v1/
-
-### notes
-app.py is just a dummy application to run a container inside k8s. not necessary, just from the very beginning.
