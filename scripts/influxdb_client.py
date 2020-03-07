@@ -41,6 +41,7 @@ def main(host='localhost', port=8086):
         print(index)
 
 # @TODO index matching of different variables and time series analysis
+# @TODO running all in multiple threads to parallelize these processes
 
 '''
 def get_all_prometheus_measurements():
