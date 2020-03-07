@@ -1,3 +1,4 @@
+.Rhistory
 *.sh
 .idea/
 _pycache__
