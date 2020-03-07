@@ -1,3 +1,6 @@
 Flask
 requests
 simplejson
+influxdb
+pandas
+
