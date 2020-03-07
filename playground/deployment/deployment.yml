@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: prom-stat
+  namespace: sachs
+spec:
+  replicas: 1
+  strategy:
+  template:
+    metadata:
+      labels:
+        app: prom-stat
+    spec:
+      containers:
+        - name: prom-stat
+          image: registry.datexis.com/ksachs/prom-stats
+          ports:
+            - name: client-port
+              containerPort: 5000
+          resources:
+            requests:
+              cpu: "4"
+              memory: 64Gi
+            limits:
+              cpu: "12"
+              memory: 128Gi
+      imagePullSecrets:
+        - name:  private-registry-auth
