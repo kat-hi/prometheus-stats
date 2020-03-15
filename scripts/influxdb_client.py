@@ -20,56 +20,84 @@ def parse_args():
     return parser.parse_args()
 
 
-def data_exploration(predictor, colnames, client):
-    log.info('\n predictor: ' + predictor)
+def get_data(predictor, colnames, client):
+    log.info('get predictor: ' + predictor)
 
     resp = client.query(
-        "select mean(%s) from %s WHERE time >= '2020-03-09T08:00:00.00Z' AND time <= '2020-03-12T20:00:00.00Z' "
-        "GROUP BY time(60s)" % (colnames[0], predictor))
+        "select mean(%s) from %s WHERE time >= '2020-03-01T08:00:00.00Z' AND time <= '2020-03-12T20:00:00.00Z' "
+        "GROUP BY time(15s)" % (colnames[0], predictor))
 
     if not resp:
         log.info('no data for predictor: ' + predictor + ' and queried colname: ' + colnames[0])
     else:
         df = pd.DataFrame(resp[predictor], columns=['mean'])
+        return df
 
+
+def data_exploration(df, predictor):
+        log.info('\n predictor: ' + predictor)
         # PLOTTING
         axes = df['mean'].plot(marker=".", linewidth=0.05, alpha=0.4, color="g", figsize=(25, 4))
         axes.set_ylabel(predictor)
         axes.set_xlabel('time')
-        # plt.show()
+        #plt.show()
 
-        # DATACLEANING
-        df = df.dropna()
+        df.rename(columns={'mean': predictor}, inplace=True)
 
         # DATAEXPLORATION
         ## PRINT MEAN, STD AND VAR
-        #log.info('mean: ' + str(float(df.mean())))
-        #log.info('sd: ' + str(float(df.std())))
+
         log.info('mean:  ' + str(float(df.mean(axis=0))))
         log.info('std: ' + str(float(df.std(axis=0))))
         log.info('min: ' + str(float(df.min())))
         log.info('max: ' + str(float(df.max())))
         log.info('n: ' + str(float(df.count())))
-        log.info('')
 
         # DATAFRAMES TO CSV
-        df.to_csv(r'../data/' + predictor, index=True, header=True)
+        #df.to_csv(r'../data/' + predictor +'.csv', index=True, header=True)
 
-        df['date'] = df.index.date
-        df['day'] = df.index.day
-        df['time'] = df.index.time
-        df['index'] = df.index
+        #df['date'] = df.index.date
+        #df['day'] = df.index.day
+        #df['time'] = df.index.time
+        #df['index'] = df.index
         return df
+
+def dataset_exploration(df_all, var):
+    log.info('\n var: ' + var)
+    log.info('mean:  ' + str(float(df_all[var].mean(axis=0))))
+    log.info('std: ' + str(float(df_all[var].std(axis=0))))
+    log.info('min: ' + str(float(df_all[var].min())))
+    log.info('max: ' + str(float(df_all[var].max())))
+    log.info('n: ' + str(float(df_all[var].count())))
 
 
 def main(host='localhost', port=8086):
     client = DataFrameClient(host, port, database=DB)
+    vars = ['up', 'ceph_osd_op_r', 'ceph_osd_op_w', 'ceph_osd_op_rw']
 
     # CREATE DATAFRAMES
-    df_up = data_exploration('up', ['value'], client)
-    df_ceph_osd_op_r = data_exploration('ceph_osd_op_r', ['value'], client)
-    df_ceph_osd_op_w = data_exploration('ceph_osd_op_w', ['value'], client)
-    df_ceph_osd_op_rw = data_exploration('ceph_osd_op_rw', ['value'], client)
+    df_up = get_data(vars[0], ['value'], client)
+    df_ceph_osd_op_r = get_data(vars[1], ['value'], client)
+    df_ceph_osd_op_w = get_data(vars[2], ['value'], client)
+    df_ceph_osd_op_rw = get_data(vars[3], ['value'], client)
+
+    # DATA EXPLORATION WITH SINGLE VARIABLE
+    data_exploration(df_up, vars[0])
+    data_exploration(df_ceph_osd_op_r, vars[1])
+    data_exploration(df_ceph_osd_op_w, vars[2])
+    data_exploration(df_ceph_osd_op_rw, vars[3])
+
+    # CONCAT DATAFRAMES TO ONE DATASET
+    df_all = pd.concat([df_up, df_ceph_osd_op_r, df_ceph_osd_op_w, df_ceph_osd_op_rw], axis=1)
+
+    # DATACLEANING
+    df_all = df_all.dropna()
+
+    # DATA EXPLORATION OF CLEANED DATASET
+    for var in vars:
+        dataset_exploration(df_all, var)
+
+
 
     # DATAEXPLORATION step by step
     ## PRINT MEAN; STD AND VAR
