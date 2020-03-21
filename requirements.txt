@@ -1,8 +1,0 @@
-Flask
-requests
-simplejson
-influxdb
-pandas
-matplotlib
-seaborn
-
