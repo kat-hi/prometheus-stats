@@ -1,4 +1,3 @@
-import argparse
 import pandas as pd
 from influxdb import DataFrameClient
 import matplotlib.pyplot as plt
@@ -9,22 +8,12 @@ INFLUX_VARS = ['up', 'ceph_osd_op_r', 'ceph_osd_op_w', 'ceph_osd_op_rw']
 
 log.basicConfig(level=log.INFO, format='%(message)s')
 
+import pars_args as parser
 
 class Influxfetcher:
-    def _init__(self):
-        self.client = DataFrameClient(host=self.parse_args().host, port=self.parse_args().host, database='prometheus')
+    client = DataFrameClient(host=parser.parse_args().host, port=parser.parse_args().port, database='prometheus')
 
-    def parse_args(self):
-        parser = argparse.ArgumentParser(description='example code to play with InfluxDB')
-        parser.add_argument('--host', type=str, required=False, default='localhost',
-                            help='hostname of InfluxDB http API')
-        parser.add_argument('--port', type=int, required=False, default=8086, help='port of InfluxDB http API')
-        log.info('PARSER: ' + str(parser.parse_args()))
-        log.info(parser.parse_args().host)
-        log.info(parser.parse_args().port)
-        return parser.parse_args()
-
-    def get_raw_data(self, predictor, colnames):
+    def __get_raw_data(self, predictor, colnames):
         log.info('get predictor: ' + predictor)
 
         resp = self.client.query(
@@ -38,15 +27,17 @@ class Influxfetcher:
             return df
 
     def create_dataframe(self, influx_var):
-        return self.get_raw_data(influx_var, ['value'])
+        return self.__get_raw_data(influx_var, ['value'])
 
 
-## AUTOMATED DATAEXPLORATION. JUST RUN AND SEE:
+# TODO REFACTORING
+## UNTIL THEN, JUST RUN AND SEE:
     def dump_create_and_use_multiple_dataframes(self):
         df_up = self.create_dataframe(INFLUX_VARS[0])
         df_ceph_osd_op_r = self.create_dataframe(INFLUX_VARS[1])
         df_ceph_osd_op_w = self.create_dataframe(INFLUX_VARS[2])
         df_ceph_osd_op_rw = self.create_dataframe(INFLUX_VARS[3])
+
 
         # DATA EXPLORATION WITH SINGLE VARIABLE
         # raw_data_exploration(df_up, INFLUX_VARS[0])
