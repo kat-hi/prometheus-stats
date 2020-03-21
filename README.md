@@ -12,4 +12,9 @@ using the influxdb api for statistical analysis of its prometheus metrics
 $ kubectl port-forward podname 8086:8086
 ```
 
+## Run the script
+
+```
+python3 scripts/influxdb_client.py
+```
 
